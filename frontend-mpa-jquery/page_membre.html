@@ -1,20 +1,18 @@
 <html>
     <head>
-        <title>{{ title }}</title>
+        <title>Page membre</title>
     <!--    <link rel="stylesheet" type="text/css" href="/static/css/style.css" /> -->
     </head>
 
     <body>
-        <span><h1>Bienvenue {{ login }}</h1><a href="/logout"><button>Logout</button></a></span>
+        <span><h1>Bienvenue <span id="display_login"></span></h1><button id="logout">Logout</button></span>
         <br />        
+        <div id="message"></div>
         <br />
         Ajouter un produit
-        <a href="/ajout_produit"><button>Ajouter produit</button></a>
+        <a href="/formulaire_ajout_produit.html"><button>Ajouter produit</button></a>
         <br />
-        {% if panier | length == 0 %}
-            Votre panier est vide
-        {% else %}                
-        Voici votre panier :
+        Voici la liste des produits :
         <br />
         <table border="1">
             <thead>
@@ -28,20 +26,12 @@
                 <td>Supprimer Produit</td>                
             </tr>
             </thead>
-            <tbody>
-                {% for nom_produit in panier %}
-                <tr align="center">
-                    <td>{{ nom_produit }}</td>
-                    <td><img width="50px" height="50px" src="/static/uploads/{{ panier[nom_produit]['image'] }}" /></td>
-                    <td>{{ panier[nom_produit]['qty'] }}</td>
-                    <td>{{ panier[nom_produit]['prix'] }}</td>
-                    <td>{{ panier[nom_produit]['prix_total'] }}</td>
-                    <td><a href="/modifier_produit?name={{ nom_produit }}">Modifier</a></td>                
-                    <td><a href="/supprimer_produit?name={{ nom_produit }}">Supprimer</a></td>                
-                </tr>            
-                {% endfor %}
+            <tbody id="tableProduits">
+                        
             </tbody>            
         </table>
-        {% endif %}        
+        <script src="/js/vendors/jquery.min.js" type="text/javascript" ></script>
+        <script src="/js/constantes.js" type="text/javascript" ></script>
+        <script src="/js/page_membre.js" type="text/javascript" ></script>
     </body>
 </html>
