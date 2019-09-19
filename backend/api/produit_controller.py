@@ -3,10 +3,17 @@ from . import routesAPIREST
 from flask import session, redirect, request
 
 from .services import ProduitService
-    
+from .services import AuthService
+
+
 #Pour tester : Utiliser POSTMAN
 @routesAPIREST.route('/produits', methods=['GET']) 
 def list_produits_controlleur(): 
+    authService = AuthService()
+    payload = authService.getValidJWTPayload(request)
+    if payload is None:
+        return jsonify({'message': 'Problème avec le JWT token dans le header HTTP Authorization'}), 401
+
     #Fonctionnel
     produitService = ProduitService()
     listProduits = produitService.getListProduits()
@@ -33,6 +40,11 @@ def list_produits_controlleur():
 #Pour tester : Utiliser POSTMAN
 @routesAPIREST.route('/produits/<int:id>', methods=['GET']) 
 def get_produit_controlleur(id): 
+    authService = AuthService()
+    payload = authService.getValidJWTPayload(request)
+    if payload is None:
+        return jsonify({'message': 'Problème avec le JWT token dans le header HTTP Authorization'}), 401
+
     #Fonctionnel
     produitService = ProduitService()
     produit = produitService.getProduit(id)
@@ -52,6 +64,11 @@ def get_produit_controlleur(id):
 #Pour tester : Utiliser POSTMAN
 @routesAPIREST.route('/produits', methods=['POST']) 
 def create_produit_controlleur(): 
+    authService = AuthService()
+    payload = authService.getValidJWTPayload(request)
+    if payload is None:
+        return jsonify({'message': 'Problème avec le JWT token dans le header HTTP Authorization'}), 401
+
     #Ajouter le produit dans la base de données
     #Fonctionnel
     produitService = ProduitService()
@@ -67,6 +84,11 @@ def create_produit_controlleur():
 #Pour tester : Utiliser POSTMAN
 @routesAPIREST.route('/produits/<int:id>', methods=['PUT']) 
 def update_produit_controlleur(id): 
+    authService = AuthService()
+    payload = authService.getValidJWTPayload(request)
+    if payload is None:
+        return jsonify({'message': 'Problème avec le JWT token dans le header HTTP Authorization'}), 401
+
     #Mettre à jour le produit dans la base de données
     #Fonctionnel
     produitService = ProduitService()
@@ -83,6 +105,11 @@ def update_produit_controlleur(id):
 #Pour tester : Utiliser POSTMAN
 @routesAPIREST.route('/produits/<int:id>', methods=['DELETE']) 
 def delete_produit_controlleur(id): 
+    authService = AuthService()
+    payload = authService.getValidJWTPayload(request)
+    if payload is None:
+        return jsonify({'message': 'Problème avec le JWT token dans le header HTTP Authorization'}), 401
+
     #Fonctionnel
     produitService = ProduitService()
     isOk = produitService.deleteProduit(id)
