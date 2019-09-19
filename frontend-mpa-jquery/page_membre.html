@@ -1,0 +1,47 @@
+<html>
+    <head>
+        <title>{{ title }}</title>
+    <!--    <link rel="stylesheet" type="text/css" href="/static/css/style.css" /> -->
+    </head>
+
+    <body>
+        <span><h1>Bienvenue {{ login }}</h1><a href="/logout"><button>Logout</button></a></span>
+        <br />        
+        <br />
+        Ajouter un produit
+        <a href="/ajout_produit"><button>Ajouter produit</button></a>
+        <br />
+        {% if panier | length == 0 %}
+            Votre panier est vide
+        {% else %}                
+        Voici votre panier :
+        <br />
+        <table border="1">
+            <thead>
+            <tr>
+                <td>Nom Produit</td>
+                <td>Image Produit</td>
+                <td>Quantité</td>
+                <td>Prix Unitaire (€)</td>
+                <td>Prix Total (€)</td>                
+                <td>Modifier Produit</td>                
+                <td>Supprimer Produit</td>                
+            </tr>
+            </thead>
+            <tbody>
+                {% for nom_produit in panier %}
+                <tr align="center">
+                    <td>{{ nom_produit }}</td>
+                    <td><img width="50px" height="50px" src="/static/uploads/{{ panier[nom_produit]['image'] }}" /></td>
+                    <td>{{ panier[nom_produit]['qty'] }}</td>
+                    <td>{{ panier[nom_produit]['prix'] }}</td>
+                    <td>{{ panier[nom_produit]['prix_total'] }}</td>
+                    <td><a href="/modifier_produit?name={{ nom_produit }}">Modifier</a></td>                
+                    <td><a href="/supprimer_produit?name={{ nom_produit }}">Supprimer</a></td>                
+                </tr>            
+                {% endfor %}
+            </tbody>            
+        </table>
+        {% endif %}        
+    </body>
+</html>

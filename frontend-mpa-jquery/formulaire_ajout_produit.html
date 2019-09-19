@@ -1,0 +1,22 @@
+<html>
+    <head>
+        <title>Produit Ajout formulaire</title>
+    <!--    
+        <link rel="stylesheet" type="text/css" href="/static/css/style.css" />
+    -->
+    </head>
+
+    <body>
+        <h1>Formulaire Ajout produit panier</h1>
+        <br />
+        <a href="/">Home</a>
+        <br />
+        <form action="/ajout_produit" method="POST" enctype="multipart/form-data">
+            Nom produit : <input type="text" name="nom_produit" value="" /><br />
+            Image produit : <input type="file" name="image_produit" accept="*.jpg,*.jpeg,*.png,*.bmp,*.gif" /><br />
+            Quantité : <input type="number" name="qty_produit" value="" /><br />
+            Prix Unitaire : <input type="number" name="prix_unitaire" value="" /><br />
+            <input type="submit" value="Ajouter produit au panier" />
+        </form>
+    </body>
+</html>
