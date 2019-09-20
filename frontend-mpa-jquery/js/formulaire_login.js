@@ -2,7 +2,7 @@
 $( document ).ready(function() {
     //console.log( "ready!" );
 
-    $('#submit').on('click', function submit() {
+    $('#submitLogin').on('click', function submit() {
 
         let login = $('#login').val()
         let password = $('#password').val()

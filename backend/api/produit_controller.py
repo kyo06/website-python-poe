@@ -5,6 +5,15 @@ from flask import session, redirect, request
 from .services import ProduitService
 from .services import AuthService
 
+from werkzeug import secure_filename
+
+import os
+import uuid
+
+
+# Create a directory in a known location to save files to.
+uploads_dir_produits = os.path.join(os.path.dirname(__file__), '../static/uploads/produits')
+os.makedirs(uploads_dir_produits, exist_ok=True)
 
 #Pour tester : Utiliser POSTMAN
 @routesAPIREST.route('/produits', methods=['GET']) 
@@ -69,10 +78,39 @@ def create_produit_controlleur():
     if payload is None:
         return jsonify({'message': 'Problème avec le JWT token dans le header HTTP Authorization'}), 401
 
+    #produit = request.json #Fonctionne avec un Content-Type: application/json
+    
+    ##Code traitant la récupération en FormData les données
+    nom_produit = request.form.get('nom_produit')
+    nom_produit = nom_produit.lower()
+    
+    qty_produit = int(request.form.get('qty_produit'))
+    prix_produit = float(request.form.get('prix_produit'))
+
+    ## Gestion de l'upload
+    #récupération de l'objet contenant les informations
+    #du fichier uploadé
+    image_produit = request.files['image_produit']
+
+    #Enregistrer le fichier dans le dossier upload de l'utilisateur
+    filename_final = secure_filename(image_produit.filename)
+    extension_filename = filename_final.split(".")[-1]
+    #uuid.uuid4().hex --> '9fe2c4e93f654fdbb24c02b15259716c'
+    filename_final = uuid.uuid4().hex + "." + extension_filename
+
+    destination_filename = os.path.join(uploads_dir_produits, filename_final)
+    image_produit.save(destination_filename)    
+    print("Filename upload : ", filename_final)
+    
+    produit = {}
+    produit['nom'] = nom_produit
+    produit['image'] = filename_final
+    produit['qty'] = qty_produit
+    produit['prix'] = prix_produit
+    
     #Ajouter le produit dans la base de données
     #Fonctionnel
     produitService = ProduitService()
-    produit = request.json 
     isOk = produitService.createProduit(produit)
 
     if not isOk:
@@ -88,12 +126,39 @@ def update_produit_controlleur(id):
     payload = authService.getValidJWTPayload(request)
     if payload is None:
         return jsonify({'message': 'Problème avec le JWT token dans le header HTTP Authorization'}), 401
+    
+    ##Code traitant la récupération en FormData les données
+    nom_produit = request.form.get('nom_produit')
+    nom_produit = nom_produit.lower()
+    
+    qty_produit = int(request.form.get('qty_produit'))
+    prix_produit = float(request.form.get('prix_produit'))
 
+    ## Gestion de l'upload
+    #récupération de l'objet contenant les informations
+    #du fichier uploadé
+    image_produit = request.files['image_produit']
+
+    #Enregistrer le fichier dans le dossier upload de l'utilisateur
+    filename_final = secure_filename(image_produit.filename)
+    extension_filename = filename_final.split(".")[-1]
+    #uuid.uuid4().hex --> '9fe2c4e93f654fdbb24c02b15259716c'
+    filename_final = uuid.uuid4().hex + "." + extension_filename
+
+    destination_filename = os.path.join(uploads_dir_produits, filename_final)
+    image_produit.save(destination_filename)    
+    print("Filename upload : ", filename_final)
+    
+    produit = {}   
+    produit['id'] = id
+    produit['nom'] = nom_produit
+    produit['image'] = filename_final
+    produit['qty'] = qty_produit
+    produit['prix'] = prix_produit
+    
     #Mettre à jour le produit dans la base de données
     #Fonctionnel
     produitService = ProduitService()
-    produit = request.json
-    produit['id'] = id
     isOk = produitService.updateProduit(produit)
 
     if not isOk:

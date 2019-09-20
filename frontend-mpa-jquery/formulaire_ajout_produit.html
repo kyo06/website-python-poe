@@ -11,11 +11,12 @@
         <br />
         <a href="/">Home</a>
         <br />
+        <div id="message"></div>
         <form>
-            Nom produit : <input type="text" name="nom_produit" value="" /><br />
-            Image produit : <input type="file" name="image_produit" accept="*.jpg,*.jpeg,*.png,*.bmp,*.gif" /><br />
-            Quantité : <input type="number" name="qty_produit" value="" /><br />
-            Prix Unitaire : <input type="number" name="prix_unitaire" value="" /><br />
+            Nom produit : <input id="nom_produit" type="text" name="nom_produit" value="" /><br />
+            Image produit : <input id="image_produit" type="file" name="image_produit" accept="*.jpg,*.jpeg,*.png,*.bmp,*.gif" /><br />
+            Quantité : <input id="qty_produit" type="number" name="qty_produit" value="" /><br />
+            Prix Unitaire : <input id="prix_produit" type="number" name="prix_produit" value="" /><br />
             <input id="submitAjoutProduit" type="button" value="Ajouter produit au panier" />
         </form>
         <script src="/js/vendors/jquery.min.js" type="text/javascript" ></script>

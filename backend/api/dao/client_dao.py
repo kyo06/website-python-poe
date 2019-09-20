@@ -19,7 +19,7 @@ class ClientDao:
         print("nombre de lignes : ", len(myresults))
 
         return len(myresults) != 0
-        
+
     def isExistLogin(self, login):
         query = 'SELECT login FROM client WHERE login = %s'
         mycursor = self.mydb.cursor(dictionary=True)
@@ -33,10 +33,6 @@ class ClientDao:
 
         return len(myresults) != 0
 
-
-
-
-
     def getListClients(self):
         query = 'SELECT * FROM client'
         mycursor = self.mydb.cursor(dictionary=True)
@@ -45,7 +41,7 @@ class ClientDao:
         
         mycursor.close()
 
-        listProduits = []
+        listClients = []
         print("Liste des résultats : ", myresults)
 
         for p in myresults:
