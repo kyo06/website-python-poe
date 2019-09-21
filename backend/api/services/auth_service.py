@@ -1,8 +1,8 @@
 from ..dao import ClientDao
+import hashlib
 import jwt
 from datetime import datetime, timedelta
 import time
-import hashlib
 
 JWT_SECRET = 'mysecret'
 JWT_ALGORITHM = 'HS256'
@@ -49,3 +49,13 @@ class AuthService:
             return payload
 
         return payload
+
+    def invalidateJWT(self, jwt_token):
+        try:
+            payload = jwt.decode(jwt_token, JWT_SECRET, JWT_ALGORITHM)
+            JWT_TOKEN_BLACK_LIST.add(jwt_token)
+            #return jsonify({'message': 'Utilisateur {0} déconnecté'.format(payload['nom'])})
+        except (KeyError, jwt.DecodeError, jwt.ExpiredSignature):
+            pass
+            #return jsonify({'message': 'Problème avec le JWT token dans le header HTTP Authorization'})
+        return True

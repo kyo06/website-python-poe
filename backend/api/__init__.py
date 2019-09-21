@@ -8,5 +8,4 @@ routesAPIREST = Blueprint('routesAPIREST', __name__, url_prefix='/api',
 
 from .index_controller import *
 from .login_controller import *
-from .panier_controller import *
 from .produit_controller import *

@@ -1,6 +1,6 @@
 from flask import jsonify
 from . import routesAPIREST
-from flask import session, redirect, request
+from flask import redirect, request
 
 from .services import ProduitService
 from .services import AuthService
@@ -25,7 +25,7 @@ def list_produits_controlleur():
 
     #Fonctionnel
     produitService = ProduitService()
-    listProduits = produitService.getListProduits()
+    listProduits = produitService.findAll()
     #listProduits = [
     #        {'name': 'savon de marseille', 'qty': 5, 'prix': 5, 'prix_total': 25},
     #        {'name': 'gel douche', 'qty': 3, 'prix': 10, 'prix_total': 30},
@@ -56,7 +56,7 @@ def get_produit_controlleur(id):
 
     #Fonctionnel
     produitService = ProduitService()
-    produit = produitService.getProduit(id)
+    produit = produitService.findOneById(id)
 
     if produit is None:
         return jsonify({ "message": "Le produit n'existe pas." })
@@ -100,7 +100,9 @@ def create_produit_controlleur():
 
         #Enregistrer le fichier dans le dossier upload de l'utilisateur
         filename_final = secure_filename(image_produit.filename)
-        extension_filename = filename_final.split(".")[-1]
+        extension_filename = ""
+        if "." in filename_final:
+            extension_filename = filename_final.split(".")[-1]
         #uuid.uuid4().hex --> '9fe2c4e93f654fdbb24c02b15259716c'
         filename_final = uuid.uuid4().hex + "." + extension_filename
 
@@ -114,7 +116,7 @@ def create_produit_controlleur():
     #Ajouter le produit dans la base de données
     #Fonctionnel
     produitService = ProduitService()
-    isOk = produitService.createProduit(produit)
+    isOk = produitService.create(produit)
 
     if not isOk:
         return jsonify({ "message": "Problème de création du produit." })
@@ -150,7 +152,9 @@ def update_produit_controlleur(id):
 
         #Enregistrer le fichier dans le dossier upload de l'utilisateur
         filename_final = secure_filename(image_produit.filename)
-        extension_filename = filename_final.split(".")[-1]
+        extension_filename = ""
+        if "." in filename_final:
+            extension_filename = filename_final.split(".")[-1]
         #uuid.uuid4().hex --> '9fe2c4e93f654fdbb24c02b15259716c'
         filename_final = uuid.uuid4().hex + "." + extension_filename
 
@@ -164,7 +168,7 @@ def update_produit_controlleur(id):
     #Mettre à jour le produit dans la base de données
     #Fonctionnel
     produitService = ProduitService()
-    isOk = produitService.updateProduit(produit)
+    isOk = produitService.update(produit)
 
     if not isOk:
         return jsonify({ "message": "Le produit n'existe pas ou n'a pas besoin d'être à jour." })
@@ -182,7 +186,7 @@ def delete_produit_controlleur(id):
 
     #Fonctionnel
     produitService = ProduitService()
-    isOk = produitService.deleteProduit(id)
+    isOk = produitService.delete(id)
 
     if not isOk:
         return jsonify({ "message": "Le produit n'existe pas." })

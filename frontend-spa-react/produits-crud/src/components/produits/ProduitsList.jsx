@@ -126,7 +126,7 @@ class ProduitsList extends Component {
       }).catch((response) => {
         ///if status code 401...
         //NE PAS OUBLIER DE VIDER LE SESSION STORAGE
-        if (response.status == 401) {
+        if (response.status === 401) {
           window.sessionStorage.clear();
 
           this.setState({ "message": 'Pas authorisé, vous allez être redirigé...' });
@@ -224,7 +224,7 @@ class ProduitsList extends Component {
     for (let index_produit in this.state.data) {
       let produit = this.state.data[index_produit];
       console.log(produit);
-      if (produit['id'] == id) {
+      if (produit['id'] === id) {
         this.setState({
           display_update_form: true,
           id_produit_update: id,
@@ -318,7 +318,10 @@ class ProduitsList extends Component {
                 <tr align="center" key={produit.id}>
                   <td>{produit.id}</td>
                   <td>{produit.nom}</td>
-                  <td><img width="50px" height="50px" src={STATIC_URL + '/uploads/produits/' + produit.image} /></td>
+                  <td>{produit.image !== "" ? 
+                      <img width="50px" height="50px" src={STATIC_URL + '/uploads/produits/' + produit.image} />
+                      : "Pas d'image"}
+                  </td>
                   <td>{produit.qty}</td>
                   <td>{produit.prix}</td>
                   <td>{produit.qty * produit.prix}</td>
