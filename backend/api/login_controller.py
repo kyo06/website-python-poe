@@ -1,7 +1,6 @@
 from flask import jsonify
 from . import routesAPIREST
 from flask import redirect, request
-from datetime import datetime, timedelta
 
 from .services import AuthService, JWT_TOKEN_BLACK_LIST, JWT_SECRET, JWT_ALGORITHM, JWT_EXP_DELTA_SECONDS
 
@@ -19,17 +18,10 @@ def login_access_controlleur():
     login = body['login']
     password = body['password']
     
-    authService = AuthService()
-    
-    if authService.checkCredentials(login, password):
-        payload = {
-            'user_id': 1,
-            'nom': 'admin',
-            'email': 'toto@gmail.com',
-            'exp': datetime.utcnow() + timedelta(seconds=JWT_EXP_DELTA_SECONDS)
-        }
-        jwt_token = jwt.encode(payload, JWT_SECRET, JWT_ALGORITHM)
-
+    authService = AuthService()    
+    jwt_token = authService.generateJWT(login, password)
+        
+    if jwt_token is not None:
         return jsonify({'token': jwt_token.decode('utf-8')})
     else:
         return jsonify({'message': 'Identifiant et/ou mdp incorrect'}), 401

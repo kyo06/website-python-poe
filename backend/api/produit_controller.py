@@ -82,7 +82,6 @@ def create_produit_controlleur():
     
     ##Code traitant la récupération en FormData les données
     nom_produit = request.form.get('nom_produit')
-    nom_produit = nom_produit.lower()
     
     qty_produit = int(request.form.get('qty_produit'))
     prix_produit = float(request.form.get('prix_produit'))
@@ -129,7 +128,6 @@ def update_produit_controlleur(id):
     
     ##Code traitant la récupération en FormData les données
     nom_produit = request.form.get('nom_produit')
-    nom_produit = nom_produit.lower()
     
     qty_produit = int(request.form.get('qty_produit'))
     prix_produit = float(request.form.get('prix_produit'))

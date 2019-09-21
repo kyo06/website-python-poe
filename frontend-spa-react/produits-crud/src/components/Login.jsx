@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import jwt_decode from 'jwt-decode'; //"@types/jwt-decode": "^2.2.1", "jwt-decode": "^2.2.0",
-import ProduitsList from './ProduitsList'
+import ProduitsList from './produits/ProduitsList'
 
 
 const SERVER_URL = 'http://localhost:5000'

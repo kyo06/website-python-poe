@@ -41,11 +41,11 @@ class ProduitsList extends Component {
       }
     }).then(response => {
       if (response.status !== 200) {
-        throw new Error(response.status)
+        throw new Error(response)
       }
       return response.json();
     }).then(data => this.setState({ "data": data }))
-      .catch(function (response) {
+      .catch((response) => {
         ///if status code 401...
         //NE PAS OUBLIER DE VIDER LE SESSION STORAGE
         window.sessionStorage.clear();
@@ -65,14 +65,14 @@ class ProduitsList extends Component {
     })
       .then(response => {
         if (response.status !== 200) {
-          throw new Error(response.status)
+          throw new Error(response)
         }
         return response.json();
       })
       .then(data => {
         this.setState({ "message": data.message });
         this.getListProduits();
-      }).catch(function (response) {
+      }).catch((response) => {
         ///if status code 401...
         //NE PAS OUBLIER DE VIDER LE SESSION STORAGE
         window.sessionStorage.clear();
@@ -104,7 +104,7 @@ class ProduitsList extends Component {
         body: formData
       }).then(response => {
         if (response.status !== 200) {
-          throw new Error(response.status)
+          throw new Error(response)
         }
         return response.json();
       })
@@ -119,7 +119,7 @@ class ProduitsList extends Component {
             "prix_produit_update": 0
           });
         });
-      }).catch(function (response) {
+      }).catch((response) => {
         ///if status code 401...
         //NE PAS OUBLIER DE VIDER LE SESSION STORAGE
         if (response.status == 401) {
@@ -166,10 +166,10 @@ class ProduitsList extends Component {
         console.log(data);
         this.setState({ "message": data.message });
         return this.getListProduits();
-      }).catch(function (response) {
+      }).catch((response) => {
         ///if status code 401...
         //NE PAS OUBLIER DE VIDER LE SESSION STORAGE
-        if (response.status == 401) {
+        if (response.status === 401) {
           window.sessionStorage.clear();
 
           this.setState({ "message": 'Pas authorisé, vous allez être redirigé...' });
@@ -188,7 +188,7 @@ class ProduitsList extends Component {
     this.supprimerProduit(id);
 
     //Cacher le formulaire d'update si on a supprimé le produit sélectionné
-    if (id == this.state.id_produit_update) {
+    if (id === this.state.id_produit_update) {
       this.setState({
         "display_update_form": false,
         "id_produit_update": 0,
@@ -215,7 +215,7 @@ class ProduitsList extends Component {
     e.preventDefault();
     for (let index_produit in this.state.data) {
       let produit = this.state.data[index_produit];
-      console.log(produit)
+      console.log(produit);
       if (produit['id'] == id) {
         this.setState({
           display_update_form: true,
