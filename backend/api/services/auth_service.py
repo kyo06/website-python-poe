@@ -2,7 +2,7 @@ from ..dao import ClientDao
 import jwt
 from datetime import datetime, timedelta
 import time
-
+import hashlib
 
 JWT_SECRET = 'mysecret'
 JWT_ALGORITHM = 'HS256'
@@ -17,16 +17,17 @@ class AuthService:
         self.dao = ClientDao()
 
     def isExistLogin(self, login):
-        return self.dao.getClientByLogin(login) is not None
+        return self.dao.findOneBy(login=login) is not None
     
     def generateJWT(self, login, password):
-        client = self.dao.getClientByCredentials(login, password)
+        password_hash = hashlib.sha1(password.encode('utf-8')).hexdigest()
+        client = self.dao.findOneBy(login=login, password=password_hash)
         print('generateJWT client : ', client)
         if client is None:
             return None
 
         payload = {
-            'user_id': client.id,
+            'id_user': client.id,
             'login': client.login, 
             'exp': datetime.utcnow() + timedelta(seconds=JWT_EXP_DELTA_SECONDS)
         }

@@ -86,26 +86,30 @@ def create_produit_controlleur():
     qty_produit = int(request.form.get('qty_produit'))
     prix_produit = float(request.form.get('prix_produit'))
 
-    ## Gestion de l'upload
-    #récupération de l'objet contenant les informations
-    #du fichier uploadé
-    image_produit = request.files['image_produit']
-
-    #Enregistrer le fichier dans le dossier upload de l'utilisateur
-    filename_final = secure_filename(image_produit.filename)
-    extension_filename = filename_final.split(".")[-1]
-    #uuid.uuid4().hex --> '9fe2c4e93f654fdbb24c02b15259716c'
-    filename_final = uuid.uuid4().hex + "." + extension_filename
-
-    destination_filename = os.path.join(uploads_dir_produits, filename_final)
-    image_produit.save(destination_filename)    
-    print("Filename upload : ", filename_final)
-    
     produit = {}
     produit['nom'] = nom_produit
-    produit['image'] = filename_final
     produit['qty'] = qty_produit
     produit['prix'] = prix_produit
+    produit['image'] = ""
+
+    ## Gestion de l'upload
+    if 'image_produit' in request.files: 
+        #récupération de l'objet contenant les informations
+        #du fichier uploadé
+        image_produit = request.files['image_produit']
+
+        #Enregistrer le fichier dans le dossier upload de l'utilisateur
+        filename_final = secure_filename(image_produit.filename)
+        extension_filename = filename_final.split(".")[-1]
+        #uuid.uuid4().hex --> '9fe2c4e93f654fdbb24c02b15259716c'
+        filename_final = uuid.uuid4().hex + "." + extension_filename
+
+        destination_filename = os.path.join(uploads_dir_produits, filename_final)
+        image_produit.save(destination_filename)    
+        print("Filename upload : ", filename_final)
+
+        produit['image'] = filename_final
+    
     
     #Ajouter le produit dans la base de données
     #Fonctionnel
@@ -132,27 +136,30 @@ def update_produit_controlleur(id):
     qty_produit = int(request.form.get('qty_produit'))
     prix_produit = float(request.form.get('prix_produit'))
 
+    produit = {}  
+    produit['id'] = id
+    produit['nom'] = nom_produit
+    produit['qty'] = qty_produit
+    produit['prix'] = prix_produit
+
     ## Gestion de l'upload
     #récupération de l'objet contenant les informations
     #du fichier uploadé
-    image_produit = request.files['image_produit']
+    if 'image_produit' in request.files: 
+        image_produit = request.files['image_produit']
 
-    #Enregistrer le fichier dans le dossier upload de l'utilisateur
-    filename_final = secure_filename(image_produit.filename)
-    extension_filename = filename_final.split(".")[-1]
-    #uuid.uuid4().hex --> '9fe2c4e93f654fdbb24c02b15259716c'
-    filename_final = uuid.uuid4().hex + "." + extension_filename
+        #Enregistrer le fichier dans le dossier upload de l'utilisateur
+        filename_final = secure_filename(image_produit.filename)
+        extension_filename = filename_final.split(".")[-1]
+        #uuid.uuid4().hex --> '9fe2c4e93f654fdbb24c02b15259716c'
+        filename_final = uuid.uuid4().hex + "." + extension_filename
 
-    destination_filename = os.path.join(uploads_dir_produits, filename_final)
-    image_produit.save(destination_filename)    
-    print("Filename upload : ", filename_final)
+        destination_filename = os.path.join(uploads_dir_produits, filename_final)
+        image_produit.save(destination_filename)    
+        print("Filename upload : ", filename_final)
+
+        produit['image'] = filename_final
     
-    produit = {}   
-    produit['id'] = id
-    produit['nom'] = nom_produit
-    produit['image'] = filename_final
-    produit['qty'] = qty_produit
-    produit['prix'] = prix_produit
     
     #Mettre à jour le produit dans la base de données
     #Fonctionnel

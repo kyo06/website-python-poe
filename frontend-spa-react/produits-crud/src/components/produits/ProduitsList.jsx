@@ -83,7 +83,11 @@ class ProduitsList extends Component {
   modifierProduit(id) {
 
     let nom_produit = this.state.nom_produit_update;
-    let image_produit = document.querySelector("#image_produit_update").files[0]; //Info + Contenu du fichier
+    let image_produit = "";
+    let image_input_element = document.querySelector("#image_produit_update")
+    if(image_input_element.value !== "") {
+      image_produit = image_input_element.files[0]; //Info + Contenu du fichier
+    }
     let qty_produit = this.state.qty_produit_update;
     let prix_produit = this.state.prix_produit_update;
 
@@ -137,7 +141,11 @@ class ProduitsList extends Component {
   ajouterProduit() {
 
     let nom_produit = this.state.nom_produit_add;
-    let image_produit = document.querySelector("#image_produit_add").files[0]; //Info + Contenu du fichier
+    let image_produit = "";
+    let image_input_element = document.querySelector("#image_produit_add")
+    if(image_input_element.value !== "") {
+      image_produit = image_input_element.files[0]; //Info + Contenu du fichier
+    }
     let qty_produit = this.state.qty_produit_add;
     let prix_produit = this.state.prix_produit_add;
 
@@ -271,25 +279,25 @@ class ProduitsList extends Component {
           <br />
           <button onClick={this.handleAddClick}>Ajouter</button>
         </form>
-        {this.state.display_update_form ? 
-        <div>
-          <h2>Modifier le produit d'id = {this.state.id_produit_update}</h2>
-          <a href="#" onClick={this.handleHideUpdateFormClick.bind(this)}>Fermer le formulaire de mise à jour</a>
-          <br />
-          <br />
-          <form align="center">
-            Nom Produit : <input onChange={this.handleFormInputChange} type="text" name="nom_produit_update" value={this.state.nom_produit_update} />
+        {this.state.display_update_form ?
+          <div>
+            <h2>Modifier le produit d'id = {this.state.id_produit_update}</h2>
+            <a href="#" onClick={this.handleHideUpdateFormClick.bind(this)}>Fermer le formulaire de mise à jour</a>
             <br />
-            Image Produit : <input id="image_produit_update" onChange={this.handleFormInputChange} type="file" name="image_produit_update" />
             <br />
-            Quantité : <input onChange={this.handleFormInputChange} type="number" name="qty_produit_update" value={this.state.qty_produit_update} />
-            <br />
-            Prix : <input onChange={this.handleFormInputChange} type="number" name="prix_produit_update" value={this.state.prix_produit_update} />
-            <br />
-            <button onClick={this.handleUpdateClick.bind(this, this.state.id_produit_update)}>Mettre à jour</button>
-          </form>
-        </div>
-         : ""}
+            <form align="center">
+              Nom Produit : <input onChange={this.handleFormInputChange} type="text" name="nom_produit_update" value={this.state.nom_produit_update} />
+              <br />
+              Image Produit : <input id="image_produit_update" onChange={this.handleFormInputChange} type="file" name="image_produit_update" />
+              <br />
+              Quantité : <input onChange={this.handleFormInputChange} type="number" name="qty_produit_update" value={this.state.qty_produit_update} />
+              <br />
+              Prix : <input onChange={this.handleFormInputChange} type="number" name="prix_produit_update" value={this.state.prix_produit_update} />
+              <br />
+              <button onClick={this.handleUpdateClick.bind(this, this.state.id_produit_update)}>Mettre à jour</button>
+            </form>
+          </div>
+          : ""}
         <h2>Liste des produits</h2>
         <center>
           <table border="1">

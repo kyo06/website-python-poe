@@ -114,7 +114,7 @@ class Login extends Component {
         thatComponent.setState({ message: 'Authorisé' }, function () {
           //Afficher le composant ProduitsList
           //<ProduitsList />
-          thatComponent.setState({ display_login_form: false, display_produits_crud: true });
+          thatComponent.setState({ display_login_form: false, display_produits_crud: true, message: '' });
         });
 
       }).catch((error) => {
