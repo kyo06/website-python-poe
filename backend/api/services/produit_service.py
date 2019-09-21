@@ -1,4 +1,4 @@
-from ..dao_orm import ProduitDao
+from ..dao import ProduitDao
 
 class ProduitService:
 

@@ -1,4 +1,4 @@
-from ..dao_orm import ClientDao
+from ..dao import ClientDao
 import jwt
 from datetime import datetime, timedelta
 import time

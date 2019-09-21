@@ -1,18 +1,14 @@
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from .models import Base
 
-#https://www.w3schools.com/python/python_mysql_getstarted.asp
-#pip install mysql-connector
-
-import mysql.connector
-
-mydb = mysql.connector.connect(
-  host="localhost",
-  user="root",
-  passwd="root",
-  database="website",
-  port=3306
-)
+mydb = create_engine("mysql://root:root@localhost:3306/website")
+Session = sessionmaker(bind=mydb)
+mydb.session = Session()
 
 def getDB():
   return mydb
 
+#Créer toutes les tables en mode Code First
+#Base.metadata.create_all(mydb)
 #print(mydb)
