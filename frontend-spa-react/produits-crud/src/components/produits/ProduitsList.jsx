@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
+import { API_URL, STATIC_URL } from '../../Constantes';
 
-const SERVER_URL = 'http://localhost:5000'
-const API_URL = SERVER_URL + '/api'
-const STATIC_URL = SERVER_URL + '/static'
+import AddProduit from './AddProduit';
+import UpdateProduit from './UpdateProduit';
 
 class ProduitsList extends Component {
   constructor(props) {
@@ -10,29 +10,23 @@ class ProduitsList extends Component {
     this.state = {
       "data": [],
       "message": "",
-      "nom_produit_add": "",
-      "qty_produit_add": 0,
-      "prix_produit_add": 0,
-
       "display_update_form": false,
-      "id_produit_update": 0,
-      "nom_produit_update": "",
-      "qty_produit_update": 0,
-      "prix_produit_update": 0
+      "data_form_update": {
+        "id_produit_update": 0,
+        "nom_produit_update": "",
+        "qty_produit_update": 0,
+        "prix_produit_update": 0
+      }
     };
 
     //this.props = { handleLogout: FunctionObject };
-    //avec un seul hangleFormChange : OK
-    this.handleFormInputChange = this.handleFormInputChange.bind(this);
   }
 
   componentDidMount() {
-    this.getListProduits();
+    this.refreshListProduits();
   }
 
-  getListProduits() {
-    let handleLogout = this.props.handleLogout;
-
+  refreshListProduits = () => {
     return fetch(API_URL + '/produits', {
       method: 'GET',
       headers: {
@@ -47,15 +41,11 @@ class ProduitsList extends Component {
     }).then(data => this.setState({ "data": data }))
       .catch((response) => {
         ///if status code 401...
-        //NE PAS OUBLIER DE VIDER LE SESSION STORAGE
-        window.sessionStorage.clear();
-        handleLogout();
+        this.props.handleLogout();
       });
   }
 
-  supprimerProduit(id) {
-    let handleLogout = this.props.handleLogout;
-
+  supprimerProduit = (id) => {
     return fetch(API_URL + '/produits/' + id, {
       method: 'DELETE',
       headers: {
@@ -65,198 +55,96 @@ class ProduitsList extends Component {
     })
       .then(response => {
         if (response.status !== 200) {
-          throw new Error(response)
+          throw new Error(response);
         }
         return response.json();
       })
-      .then(data => {
-        this.setState({ "message": data.message });
-        this.getListProduits();
-      }).catch((response) => {
-        ///if status code 401...
-        //NE PAS OUBLIER DE VIDER LE SESSION STORAGE
-        window.sessionStorage.clear();
-        handleLogout();
-      });
-  }
-
-  modifierProduit(id) {
-
-    let nom_produit = this.state.nom_produit_update;
-    let image_produit = "";
-    let image_input_element = document.querySelector("#image_produit_update")
-    if(image_input_element.value !== "") {
-      image_produit = image_input_element.files[0]; //Info + Contenu du fichier
-    }
-    let qty_produit = this.state.qty_produit_update;
-    let prix_produit = this.state.prix_produit_update;
-
-    let formData = new FormData();
-    formData.append('nom_produit', nom_produit);
-    formData.append('image_produit', image_produit);
-    formData.append('qty_produit', qty_produit);
-    formData.append('prix_produit', prix_produit);
-
-    let handleLogout = this.props.handleLogout;
-
-    return fetch(API_URL + '/produits/' + id,
-      {
-        method: 'PUT',
-        headers: {
-          'Authorization': window.sessionStorage["token"]
-        },
-        body: formData
-      }).then(response => {
-        if (response.status !== 200) {
-          throw new Error(response)
-        }
-        return response.json();
-      })
-      .then(data => {
-        this.setState({ "message": data.message });
-        this.getListProduits().then(() => {
-          this.setState({
-            "display_update_form": false,
-            "id_produit_update": 0,
-            "nom_produit_update": "",
-            "qty_produit_update": 0,
-            "prix_produit_update": 0
-          });
+      .then((data) => {
+        this.setState({ "message": data.message }, () => {
+          this.refreshListProduits();
         });
+
       }).catch((response) => {
         ///if status code 401...
-        //NE PAS OUBLIER DE VIDER LE SESSION STORAGE
-        if (response.status === 401) {
-          window.sessionStorage.clear();
-
-          this.setState({ "message": 'Pas authorisé, vous allez être redirigé...' });
-          handleLogout();
-
-        } else {
-          this.setState({ "message": 'Problème de modification du produit' });
-        }
+        this.props.handleLogout();
       });
-  }
-
-  ajouterProduit() {
-
-    let nom_produit = this.state.nom_produit_add;
-    let image_produit = "";
-    let image_input_element = document.querySelector("#image_produit_add")
-    if(image_input_element.value !== "") {
-      image_produit = image_input_element.files[0]; //Info + Contenu du fichier
-    }
-    let qty_produit = this.state.qty_produit_add;
-    let prix_produit = this.state.prix_produit_add;
-
-    let data = new FormData();
-    data.append('nom_produit', nom_produit);
-    data.append('image_produit', image_produit);
-    data.append('qty_produit', qty_produit);
-    data.append('prix_produit', prix_produit);
-
-    let handleLogout = this.props.handleLogout;
-
-    return fetch(API_URL + '/produits',
-      {
-        method: 'POST',
-        headers: {
-          'Authorization': window.sessionStorage["token"]
-        },
-        body: data
-      }).then(response => {
-        if (response.status !== 200) {
-          throw new Error(response)
-        }
-        return response.json();
-      })
-      .then(data => {
-        console.log(data);
-        this.setState({ "message": data.message });
-        return this.getListProduits();
-      }).catch((response) => {
-        ///if status code 401...
-        //NE PAS OUBLIER DE VIDER LE SESSION STORAGE
-        if (response.status === 401) {
-          window.sessionStorage.clear();
-
-          this.setState({ "message": 'Pas authorisé, vous allez être redirigé...' });
-          handleLogout();
-
-        } else {
-          this.setState({ "message": 'Problème de création du produit' });
-        }
-      });
-
   }
 
   handleDeleteClick = (id, e) => {
     e.preventDefault();
-    console.log('The link was clicked.');
     this.supprimerProduit(id);
 
     //Cacher le formulaire d'update si on a supprimé le produit sélectionné
     if (id === this.state.id_produit_update) {
       this.setState({
-        "display_update_form": false,
-        "id_produit_update": 0,
-        "nom_produit_update": "",
-        "qty_produit_update": 0,
-        "prix_produit_update": 0
+        "display_update_form": false
       });
     }
-
-  };
-
-  handleUpdateClick = (id, e) => {
-    e.preventDefault();
-    console.log('The link was clicked.');
-    this.modifierProduit(id);
-  };
-
-  handleAddClick = (e) => {
-    e.preventDefault();
-    this.ajouterProduit();
-  };
+  }
 
   handleDisplayFormUpdateClick = (id, e) => {
     e.preventDefault();
-    for (let index_produit in this.state.data) {
-      let produit = this.state.data[index_produit];
-      console.log(produit);
-      if (produit['id'] === id) {
-        this.setState({
-          display_update_form: true,
-          id_produit_update: id,
-          nom_produit_update: produit['nom'],
-          qty_produit_update: produit['qty'],
-          prix_produit_update: produit['prix']
-        });
-        break;
-      }
-    }
-  };
 
-  handleHideUpdateFormClick = (e) => {
-    e.preventDefault();
+    this.setState({
+      display_update_form: false,
+      data_form_update: {
+        id_produit_update: -1,
+        nom_produit_update: "",
+        qty_produit_update: 0,
+        prix_produit_update: 0
+      }
+    }, () => {
+      //Mettre à jour avec le nouveau produit
+      for (let index_produit = 0; index_produit < this.state.data.length; ++index_produit) {
+        let produit = this.state.data[index_produit];
+        if (produit['id'] === id) {
+          console.log(produit);
+          this.setState({
+            display_update_form: true,
+            data_form_update: {
+              id_produit_update: id,
+              nom_produit_update: produit['nom'],
+              qty_produit_update: produit['qty'],
+              prix_produit_update: produit['prix']
+            }
+          });
+          break;
+        }
+      }
+    });
+  }
+
+  handleSuccessAddForm = (response) => {
+    this.setState({ 'message': response.message }, () => {
+      this.refreshListProduits();
+    });
+  }
+
+  handleErrorAddForm = (response) => {
+    this.setState({ 'message': response.message })
+  }
+
+  handleSuccessUpdateForm = (response) => {
     this.setState({
       "display_update_form": false,
-      "id_produit_update": 0,
-      "nom_produit_update": "",
-      "qty_produit_update": 0,
-      "prix_produit_update": 0
+      'message': response.message
+    }, () => {
+      this.refreshListProduits();
     });
-  };
+  }
 
-  //handleFormInput générique :)
-  handleFormInputChange(event) {
-    const target = event.target;
-    let value = target.type === 'checkbox' ? target.checked : target.value;
-    const name = target.name;
-
+  handleErrorUpdateForm = (response) => {
     this.setState({
-      [name]: value
+      "display_update_form": false,
+      'message': response.message
     });
+  }
+
+  handleHideUpdateForm = () => {
+    this.setState({
+      "display_update_form": false
+    });
+    this.refreshListProduits();
   }
 
   render() {
@@ -266,37 +154,15 @@ class ProduitsList extends Component {
       <div className="App">
         <h1>CRUD Produits</h1>
         <h2>{message}</h2>
-
-        <h2>Ajout de produit</h2>
-        <form align="center">
-          Nom Produit : <input onChange={this.handleFormInputChange} type="text" name="nom_produit_add" value={this.state.nom_produit_add} />
-          <br />
-          Image Produit : <input id="image_produit_add" onChange={this.handleFormInputChange} type="file" name="image_produit_add" />
-          <br />
-          Quantité : <input onChange={this.handleFormInputChange} type="number" name="qty_produit_add" value={this.state.qty_produit_add} />
-          <br />
-          Prix : <input onChange={this.handleFormInputChange} type="number" name="prix_produit_add" value={this.state.prix_produit_add} />
-          <br />
-          <button onClick={this.handleAddClick}>Ajouter</button>
-        </form>
+        <AddProduit handleSuccessAddForm={this.handleSuccessAddForm}
+          handleErrorAddForm={this.handleErrorAddForm}
+          handleLogout={this.props.handleLogout} />
         {this.state.display_update_form ?
-          <div>
-            <h2>Modifier le produit d'id = {this.state.id_produit_update}</h2>
-            <a href="#" onClick={this.handleHideUpdateFormClick.bind(this)}>Fermer le formulaire de mise à jour</a>
-            <br />
-            <br />
-            <form align="center">
-              Nom Produit : <input onChange={this.handleFormInputChange} type="text" name="nom_produit_update" value={this.state.nom_produit_update} />
-              <br />
-              Image Produit : <input id="image_produit_update" onChange={this.handleFormInputChange} type="file" name="image_produit_update" />
-              <br />
-              Quantité : <input onChange={this.handleFormInputChange} type="number" name="qty_produit_update" value={this.state.qty_produit_update} />
-              <br />
-              Prix : <input onChange={this.handleFormInputChange} type="number" name="prix_produit_update" value={this.state.prix_produit_update} />
-              <br />
-              <button onClick={this.handleUpdateClick.bind(this, this.state.id_produit_update)}>Mettre à jour</button>
-            </form>
-          </div>
+          <UpdateProduit {...this.state.data_form_update}
+            handleSuccessUpdateForm={this.handleSuccessUpdateForm}
+            handleErrorUpdateForm={this.handleErrorUpdateForm}
+            handleHideUpdateForm={this.handleHideUpdateForm}
+            handleLogout={this.props.handleLogout} />
           : ""}
         <h2>Liste des produits</h2>
         <center>
@@ -318,15 +184,15 @@ class ProduitsList extends Component {
                 <tr align="center" key={produit.id}>
                   <td>{produit.id}</td>
                   <td>{produit.nom}</td>
-                  <td>{produit.image !== "" ? 
-                      <img width="50px" height="50px" src={STATIC_URL + '/uploads/produits/' + produit.image} />
-                      : "Pas d'image"}
+                  <td>{produit.image !== "" ?
+                    <img width="50px" height="50px" alt={produit.image} src={STATIC_URL + '/uploads/produits/' + produit.image} />
+                    : "Pas d'image"}
                   </td>
                   <td>{produit.qty}</td>
                   <td>{produit.prix}</td>
                   <td>{produit.qty * produit.prix}</td>
-                  <td><a href="#" onClick={this.handleDisplayFormUpdateClick.bind(this, produit.id)}>Modifier Produit</a></td>
-                  <td><a href="#" onClick={this.handleDeleteClick.bind(this, produit.id)}>Supprimer</a></td>
+                  <td><button onClick={this.handleDisplayFormUpdateClick.bind(this, produit.id)}>Modifier Produit</button></td>
+                  <td><button onClick={this.handleDeleteClick.bind(this, produit.id)}>Supprimer</button></td>
                 </tr>)
               }
             </tbody>
@@ -334,8 +200,6 @@ class ProduitsList extends Component {
         </center>
       </div>
     );
-
-
   }
 }
 
