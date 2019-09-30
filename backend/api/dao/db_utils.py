@@ -2,7 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from .models import Base
 
-mydb = create_engine("mysql://root:root@localhost:3306/website")
+mydb = create_engine("mysql://root:root@127.0.0.1:3306/website")
 Session = sessionmaker(bind=mydb)
 mydb.session = Session()
 
