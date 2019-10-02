@@ -13,6 +13,10 @@ def contact(request):
 def formulaire(request):
     return render(request, 'produits/formulaire.html', {})
 
+def list_produits(request):
+    produits = Product.objects.all()
+    return render(request, 'produits/produits.html', 
+            {'title': "Liste des produits", 'produits': produits})
 
 def add_produit(request):
     if request.method == "POST":
