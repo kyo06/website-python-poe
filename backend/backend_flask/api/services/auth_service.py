@@ -28,7 +28,8 @@ class AuthService:
 
         payload = {
             'id_user': client.id,
-            'login': client.login, 
+            'login': client.login,
+            'role': client.role, 
             'exp': datetime.utcnow() + timedelta(seconds=JWT_EXP_DELTA_SECONDS)
         }
         return jwt.encode(payload, JWT_SECRET, JWT_ALGORITHM)

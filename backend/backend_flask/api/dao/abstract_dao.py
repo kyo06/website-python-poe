@@ -59,7 +59,7 @@ class AbstractDao:
         #https://code-maven.com/slides/python-programming/orm-select-insert
         try:
             self.session.add(self.entity_class(**kwargs))
-            self.session.commit()
+            #self.session.commit() # because autocommit=True
             return True
         except:
             return False
@@ -72,7 +72,7 @@ class AbstractDao:
         #https://code-maven.com/slides/python-programming/orm-update        
         try:
             self.queryBy(id=kwargs['id']).update(kwargs)        
-            self.session.commit()
+            #self.session.commit() # because autocommit=True
         except:
             return False
         return True
@@ -90,7 +90,7 @@ class AbstractDao:
     def deleteBy(self, **kwargs):
         try:
             self.queryBy(**kwargs).delete()
-            self.session.commit()
+            #self.session.commit() # because autocommit=True
             return True
         except:
             return False

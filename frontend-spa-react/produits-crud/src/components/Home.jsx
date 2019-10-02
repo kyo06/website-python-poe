@@ -11,7 +11,8 @@ class Home extends Component {
     this.state = {
       message: '',
       display_login_form: true,
-      display_produits_crud: false
+      display_produits_crud: false,
+      display_admin: false
     };
     //avec un seul hangleFormChange : OK
     this.handleLogoutClick = this.handleLogoutClick.bind(this);
@@ -66,11 +67,13 @@ class Home extends Component {
     window.sessionStorage["connected"] = true;
     window.sessionStorage["token"] = response.token
     window.sessionStorage["payload"] = JSON.stringify(payload);
+    window.sessionStorage["role"] = payload.role;
 
     this.setState({ 
       login: payload.login, 
       display_login_form: false, 
       display_produits_crud: true, 
+      display_admin: payload.role === 'admin',
       message: ''
     });
   }
@@ -89,6 +92,18 @@ class Home extends Component {
             handleErrorLoginForm={this.handleErrorLoginForm}
             handleLogout={this.logout} />
           : ""}
+        {!this.state.display_login_form ? 
+          this.state.display_admin ?
+          <div>
+            Vous êtes administrateur
+          </div> 
+          : 
+          <div>
+            Vous êtes utilisateur
+          </div>
+          :
+          ""
+        }
         {this.state.display_produits_crud ?
           <div>
             <h1>Bienvenue {this.state.login}</h1>
