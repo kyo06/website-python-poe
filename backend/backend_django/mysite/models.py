@@ -12,8 +12,6 @@ class Article(models.Model):
     last_updated = models.DateTimeField(default=timezone.now)
     image_url = models.CharField(max_length=200)
 
-
-
 class Product(models.Model):
 
     title = models.CharField(max_length=200)
